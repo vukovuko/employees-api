@@ -145,15 +145,46 @@ curl -X GET "http://localhost:5039/weatherforecast" \
 ### 3. Using a Web Browser
 
 Navigate to:
-- **HTTP**: http://localhost:5039/weatherforecast
-- **HTTPS**: https://localhost:7028/weatherforecast
+- **HTTP**: http://localhost:5039/employees
+- **HTTPS**: https://localhost:7028/employees
 
 ### 4. Using Postman
 
 1. Create a new GET request
-2. URL: `http://localhost:5039/weatherforecast`
+2. URL: `http://localhost:5039/employees`
 3. Headers: `Accept: application/json`
 4. Send the request
+
+## Running Tests
+
+### Unit Tests
+
+The project includes a test project using xUnit:
+
+```bash
+# Run all tests
+dotnet test
+
+# Run tests with verbose output
+dotnet test --verbosity normal
+
+# Run tests for specific project
+dotnet test TheEmployeeAPI.Tests
+```
+
+**Expected Output:**
+```
+Test summary: total: 1, failed: 0, succeeded: 1, skipped: 0, duration: 2.0s
+Build succeeded in 3.3s
+```
+
+### Test Project Structure
+
+```
+TheEmployeeAPI.Tests/
+├── TheEmployeeAPI.Tests.csproj  # Test project file
+└── UnitTest1.cs                 # Test file with xUnit tests
+```
 
 ## Troubleshooting
 

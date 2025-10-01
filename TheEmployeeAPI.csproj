@@ -11,4 +11,11 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
   </ItemGroup>
 
+  <!-- Exclude the test project files from this web project build -->
+  <ItemGroup>
+    <Compile Remove="TheEmployeeAPI.Tests\**\*.cs" />
+    <None Remove="TheEmployeeAPI.Tests\**\*" />
+    <EmbeddedResource Remove="TheEmployeeAPI.Tests\**\*" />
+  </ItemGroup>
+
 </Project>

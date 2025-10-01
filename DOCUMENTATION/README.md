@@ -16,6 +16,8 @@ TheEmployeeAPI/
 ├── Properties/
 │   └── launchSettings.json      # Launch configuration
 ├── TheEmployeeAPI.http          # HTTP test file
+├── TheEmployeeAPI.Tests/        # Unit test project
+│   └── UnitTest1.cs            # Test file
 └── DOCUMENTATION/               # This documentation folder
     ├── README.md               # This file
     ├── API-Reference.md        # API endpoint documentation
@@ -29,7 +31,8 @@ TheEmployeeAPI/
 1. **Prerequisites**: .NET 9.0 SDK
 2. **Run the application**: `dotnet run`
 3. **Access the API**: `https://localhost:7028` or `http://localhost:5039`
-4. **Test endpoint**: `GET /weatherforecast`
+4. **Test endpoints**: `GET /employees`, `GET /employees/{id}`, `POST /employees`
+5. **Run tests**: `dotnet test`
 
 ## Documentation Files
 
@@ -42,6 +45,7 @@ TheEmployeeAPI/
 
 - **Employee Management API**: CRUD operations for employee data
 - **Route Groups**: Organized endpoints using `/employees` route group
+- **Unit Testing**: xUnit test project with `dotnet test` support
 - **OpenAPI Support**: Swagger/OpenAPI documentation in development mode
 - **HTTPS Redirection**: Automatic HTTPS redirection for security
 - **Minimal API**: Clean, minimal API implementation without controllers

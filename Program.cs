@@ -43,3 +43,5 @@ employeeRoute.MapPost(string.Empty, ([FromBody] Employee employee) => {
 });
 
 app.Run();
+
+public partial class Program { }

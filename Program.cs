@@ -23,11 +23,13 @@ employees.Add(new Employee { Id = 2, FirstName = "Jane", LastName = "Doe" });
 
 var employeeRoute = app.MapGroup("/employees");
 
-employeeRoute.MapGet(string.Empty, () => {
+employeeRoute.MapGet(string.Empty, () =>
+{
     return employees;
 });
 
-employeeRoute.MapGet("{id:int}", (int id) => {
+employeeRoute.MapGet("{id:int}", (int id) =>
+{
     var employee = employees.SingleOrDefault(e => e.Id == id);
     if (employee == null)
     {
@@ -36,7 +38,8 @@ employeeRoute.MapGet("{id:int}", (int id) => {
     return Results.Ok(employee);
 });
 
-employeeRoute.MapPost(string.Empty, ([FromBody] Employee employee) => {
+employeeRoute.MapPost(string.Empty, ([FromBody] Employee employee) =>
+{
     employee.Id = employees.Max(e => e.Id) + 1; // We're not using a database, so we need to manually assign an ID
     employees.Add(employee);
     return Results.Created($"/employees/{employee.Id}", employee);

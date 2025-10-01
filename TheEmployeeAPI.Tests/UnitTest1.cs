@@ -35,7 +35,7 @@ public class BasicTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task CreateEmployee_ReturnsCreatedResult()
     {
         var client = _factory.CreateClient();
-        var response = await client.PostAsJsonAsync("/employees", new Employee { FirstName = "John", LastName = "Doe" });
+        var response = await client.PostAsJsonAsync("/employees", new { firstName = "John", lastName = "Doe" });
 
         response.EnsureSuccessStatusCode();
     }

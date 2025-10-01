@@ -1,0 +1,24 @@
+@TheEmployeeAPI_HostAddress = http://localhost:5039
+
+### Get all employees
+GET {{TheEmployeeAPI_HostAddress}}/employees
+Accept: application/json
+
+###
+
+### Get employee by ID
+GET {{TheEmployeeAPI_HostAddress}}/employees/1
+Accept: application/json
+
+###
+
+### Create new employee
+POST {{TheEmployeeAPI_HostAddress}}/employees
+Content-Type: application/json
+
+{
+  "firstName": "Alice",
+  "lastName": "Smith"
+}
+
+###

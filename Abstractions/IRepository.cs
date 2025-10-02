@@ -1,6 +1,6 @@
 using System;
 
-namespace TheEmployeeAPI.Absractions;
+namespace TheEmployeeAPI.Abstractions;
 
 public interface IRepository<T>
 {

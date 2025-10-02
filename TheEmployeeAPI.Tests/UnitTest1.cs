@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using TheEmployeeAPI.Abstractions;
 
 namespace TheEmployeeAPI.Tests;
 
@@ -11,6 +13,9 @@ public class BasicTests : IClassFixture<WebApplicationFactory<Program>>
     public BasicTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory;
+
+        var repo = _factory.Services.GetRequiredService<IRepository<Employee>>();
+        repo.Create(new Employee { FirstName = "John", LastName = "Doe" });
     }
 
     [Fact]
@@ -35,7 +40,7 @@ public class BasicTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task CreateEmployee_ReturnsCreatedResult()
     {
         var client = _factory.CreateClient();
-        var response = await client.PostAsJsonAsync("/employees", new { FirstName = "John", LastName = "Doe" });
+        var response = await client.PostAsJsonAsync("/employees", new Employee { FirstName = "John", LastName = "Doe" });
 
         response.EnsureSuccessStatusCode();
     }
@@ -44,16 +49,16 @@ public class BasicTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task CreateEmployee_ReturnsBadRequestResult()
     {
         var client = _factory.CreateClient();
-        var response = await client.PostAsJsonAsync("/employees", new { });
+        var response = await client.PostAsJsonAsync("/employees", new{});
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
-
+    
     [Fact]
     public async Task UpdateEmployee_ReturnsOkResult()
     {
         var client = _factory.CreateClient();
-        var response = await client.PutAsJsonAsync("/employees/1", new { Address1 = "123 Main St", City = "Anytown" });
+        var response = await client.PutAsJsonAsync("/employees/1", new Employee { FirstName = "John", LastName = "Doe" });
 
         response.EnsureSuccessStatusCode();
     }

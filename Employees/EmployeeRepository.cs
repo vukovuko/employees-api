@@ -1,4 +1,4 @@
-using TheEmployeeAPI.Absractions;
+using TheEmployeeAPI.Abstractions;
 
 public class EmployeeRepository : IRepository<Employee>
 {

@@ -1,4 +1,5 @@
-using TheEmployeeAPI.Absractions;
+using Microsoft.AspNetCore.Mvc;
+using TheEmployeeAPI.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,7 @@ app.UseHttpsRedirection();
 
 var employeeRoute = app.MapGroup("/employees");
 
-employeeRoute.MapGet(string.Empty, (IRepository<Employee> repository) =>
+employeeRoute.MapGet(string.Empty, ([FromServices] IRepository<Employee> repository) =>
 {
     return Results.Ok(repository.GetAll().Select(employee => new GetEmployeeResponse
     {
@@ -35,7 +36,7 @@ employeeRoute.MapGet(string.Empty, (IRepository<Employee> repository) =>
     }));
 });
 
-employeeRoute.MapGet("{id:int}", (int id, IRepository<Employee> repository) =>
+employeeRoute.MapGet("{id:int}", ([FromRoute] int id, [FromServices] IRepository<Employee> repository) =>
 {
     var employee = repository.GetById(id);
     if (employee == null)
@@ -57,7 +58,7 @@ employeeRoute.MapGet("{id:int}", (int id, IRepository<Employee> repository) =>
     });
 });
 
-employeeRoute.MapPost(string.Empty, (CreateEmployeeRequest employeeRequest, IRepository<Employee> repository) =>
+employeeRoute.MapPost(string.Empty, ([FromBody] CreateEmployeeRequest employeeRequest, [FromServices] IRepository<Employee> repository) =>
 {
     var newEmployee = new Employee
     {
@@ -76,7 +77,7 @@ employeeRoute.MapPost(string.Empty, (CreateEmployeeRequest employeeRequest, IRep
     return Results.Created($"/employees/{newEmployee.Id}", employeeRequest);
 });
 
-employeeRoute.MapPut("{id}", (UpdateEmployeeRequest employeeRequest, int id, IRepository<Employee> repository) =>
+employeeRoute.MapPut("{id}", ([FromBody] UpdateEmployeeRequest employeeRequest, [FromRoute] int id, [FromServices] IRepository<Employee> repository) =>
 {
     var existingEmployee = repository.GetById(id);
     if (existingEmployee == null)

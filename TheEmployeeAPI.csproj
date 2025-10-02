@@ -17,5 +17,8 @@
     <None Remove="TheEmployeeAPI.Tests\**\*" />
     <EmbeddedResource Remove="TheEmployeeAPI.Tests\**\*" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Employees\" />
+  </ItemGroup>
 
 </Project>

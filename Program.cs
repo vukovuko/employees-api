@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+using TheEmployeeAPI.Absractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddSingleton<IRepository<Employee>, EmployeeRepository>();// Register service
 
 var app = builder.Build();
 
@@ -16,34 +17,86 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var employees = new List<Employee>();
-
-employees.Add(new Employee { Id = 1, FirstName = "John", LastName = "Doe" });
-employees.Add(new Employee { Id = 2, FirstName = "Jane", LastName = "Doe" });
-
 var employeeRoute = app.MapGroup("/employees");
 
-employeeRoute.MapGet(string.Empty, () =>
+employeeRoute.MapGet(string.Empty, (IRepository<Employee> repository) =>
 {
-    return employees;
+    return Results.Ok(repository.GetAll().Select(employee => new GetEmployeeResponse
+    {
+        FirstName = employee.FirstName,
+        LastName = employee.LastName,
+        Address1 = employee.Address1,
+        Address2 = employee.Address2,
+        City = employee.City,
+        State = employee.State,
+        ZipCode = employee.ZipCode,
+        PhoneNumber = employee.PhoneNumber,
+        Email = employee.Email
+    }));
 });
 
-employeeRoute.MapGet("{id:int}", (int id) =>
+employeeRoute.MapGet("{id:int}", (int id, IRepository<Employee> repository) =>
 {
-    var employee = employees.SingleOrDefault(e => e.Id == id);
+    var employee = repository.GetById(id);
     if (employee == null)
     {
         return Results.NotFound();
     }
-    return Results.Ok(employee);
+
+    return Results.Ok(new GetEmployeeResponse
+    {
+        FirstName = employee.FirstName,
+        LastName = employee.LastName,
+        Address1 = employee.Address1,
+        Address2 = employee.Address2,
+        City = employee.City,
+        State = employee.State,
+        ZipCode = employee.ZipCode,
+        PhoneNumber = employee.PhoneNumber,
+        Email = employee.Email
+    });
 });
 
-employeeRoute.MapPost(string.Empty, ([FromBody] Employee employee) =>
+employeeRoute.MapPost(string.Empty, (CreateEmployeeRequest employeeRequest, IRepository<Employee> repository) =>
 {
-    employee.Id = employees.Max(e => e.Id) + 1; // We're not using a database, so we need to manually assign an ID
-    employees.Add(employee);
-    return Results.Created($"/employees/{employee.Id}", employee);
+    var newEmployee = new Employee
+    {
+        FirstName = employeeRequest.FirstName,
+        LastName = employeeRequest.LastName,
+        SocialSecurityNumber = employeeRequest.SocialSecurityNumber,
+        Address1 = employeeRequest.Address1,
+        Address2 = employeeRequest.Address2,
+        City = employeeRequest.City,
+        State = employeeRequest.State,
+        ZipCode = employeeRequest.ZipCode,
+        PhoneNumber = employeeRequest.PhoneNumber,
+        Email = employeeRequest.Email
+    };
+    repository.Create(newEmployee);
+    return Results.Created($"/employees/{newEmployee.Id}", employeeRequest);
 });
+
+employeeRoute.MapPut("{id}", (UpdateEmployeeRequest employeeRequest, int id, IRepository<Employee> repository) =>
+{
+    var existingEmployee = repository.GetById(id);
+    if (existingEmployee == null)
+    {
+        return Results.NotFound();
+    }
+
+    existingEmployee.Address1 = employeeRequest.Address1;
+    existingEmployee.Address2 = employeeRequest.Address2;
+    existingEmployee.City = employeeRequest.City;
+    existingEmployee.State = employeeRequest.State;
+    existingEmployee.ZipCode = employeeRequest.ZipCode;
+    existingEmployee.PhoneNumber = employeeRequest.PhoneNumber;
+    existingEmployee.Email = employeeRequest.Email;
+
+    repository.Update(existingEmployee);
+    return Results.Ok(existingEmployee);
+});
+
+app.UseHttpsRedirection();
 
 app.Run();
 

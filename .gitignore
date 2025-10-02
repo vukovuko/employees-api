@@ -10,6 +10,7 @@ obj/
 out/
 
 # User-specific files
+DOCUMENTATION
 *.rsuser
 *.suo
 *.user

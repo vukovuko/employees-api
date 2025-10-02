@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using TheEmployeeAPI.Abstractions;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IRepository<Employee>, EmployeeRepository>();// Register service
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -60,10 +62,17 @@ employeeRoute.MapGet("{id:int}", ([FromRoute] int id, [FromServices] IRepository
 
 employeeRoute.MapPost(string.Empty, ([FromBody] CreateEmployeeRequest employeeRequest, [FromServices] IRepository<Employee> repository) =>
 {
+    var validationProblems = new List<ValidationResult>();
+    var isValid = Validator.TryValidateObject(employeeRequest, new ValidationContext(employeeRequest), validationProblems, true);
+    if (!isValid)
+    {
+        return Results.BadRequest(validationProblems.ToValidationProblemDetails());
+    }
+
     var newEmployee = new Employee
     {
-        FirstName = employeeRequest.FirstName,
-        LastName = employeeRequest.LastName,
+        FirstName = employeeRequest.FirstName!,
+        LastName = employeeRequest.LastName!,
         SocialSecurityNumber = employeeRequest.SocialSecurityNumber,
         Address1 = employeeRequest.Address1,
         Address2 = employeeRequest.Address2,

@@ -20,6 +20,7 @@
     <EmbeddedResource Remove="TheEmployeeAPI.Tests\**\*" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controllers\" />
     <Folder Include="Employees\" />
   </ItemGroup>
 

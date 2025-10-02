@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using TheEmployeeAPI.Abstractions;
 
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IRepository<Employee>, EmployeeRepository>();// Register service
 builder.Services.AddProblemDetails();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
 
@@ -60,13 +62,12 @@ employeeRoute.MapGet("{id:int}", ([FromRoute] int id, [FromServices] IRepository
     });
 });
 
-employeeRoute.MapPost(string.Empty, ([FromBody] CreateEmployeeRequest employeeRequest, [FromServices] IRepository<Employee> repository) =>
+employeeRoute.MapPost(string.Empty, async ([FromBody] CreateEmployeeRequest employeeRequest, [FromServices] IRepository<Employee> repository, [FromServices] IValidator<CreateEmployeeRequest> validator) =>
 {
-    var validationProblems = new List<ValidationResult>();
-    var isValid = Validator.TryValidateObject(employeeRequest, new ValidationContext(employeeRequest), validationProblems, true);
-    if (!isValid)
+    var validationResults = await validator.ValidateAsync(employeeRequest);
+    if (!validationResults.IsValid)
     {
-        return Results.BadRequest(validationProblems.ToValidationProblemDetails());
+        return Results.ValidationProblem(validationResults.ToDictionary());
     }
 
     var newEmployee = new Employee

@@ -15,8 +15,8 @@
     "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
   "omnisharp.enableEditorConfigSupport": true,
-  "omnisharp.enableRoslynAnalyzers": true,
-  "omnisharp.enableImportCompletion": true,
+"omnisharp.enableRoslynAnalyzers": true,
   "csharp.format.enable": true,
-  "csharp.semanticHighlighting.enabled": true
+"csharp.semanticHighlighting.enabled": true,
+"dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true
 }
